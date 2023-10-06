@@ -84,7 +84,7 @@ function App() {
           >
             {data?.condensedData?.map((pokemon, index) => {
               return (
-                <GridItem key={index}>
+                <GridItem key={index} cursor={"pointer"}>
                   <PokemonCard pokemon={pokemon} />
                 </GridItem>
               );

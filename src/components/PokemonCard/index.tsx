@@ -2,6 +2,7 @@ import { Box, Button, Flex, Heading, Image } from "@chakra-ui/react";
 import { Root } from "../../hooks/useFetchPokemon";
 import { PokemonType } from "../../utils/pokemonType";
 import { getImageURL } from "../../utils/getImage";
+import { formatId } from "../../utils/formatId";
 
 interface IPokemonCardProps {
   pokemon: Root;
@@ -12,7 +13,6 @@ const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
   const background =
     PokemonType[types[0].type.name as keyof typeof PokemonType];
   const typesArray = types.map((t) => t.type.name);
-  console.log(typesArray, "ll");
 
   return (
     <Flex
@@ -46,17 +46,31 @@ const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
           ))}
         </Flex>
       </Box>
-      <Box p={2} position={"relative"}>
-        <Heading position={"absolute"} right={"0"}>
-          {pokemon?.id}
+      <Flex
+        p={2}
+        position={"relative"}
+        alignItems={"center"}
+        justifyContent={"flex-end"}
+      >
+        <Heading
+          position={"absolute"}
+          right={"0"}
+          top={"0"}
+          fontSize={"42px"}
+          fontWeight={"800"}
+          opacity={0.5}
+        >
+          {formatId(pokemon?.id)}
         </Heading>
         <Image
+          position={"inherit"}
           maxH={"full"}
           maxW={"full"}
           boxSizing="border-box"
+          transform={"scale(0.75)"}
           src={getImageURL(pokemon?.id?.toString())}
         />
-      </Box>
+      </Flex>
     </Flex>
   );
 };
