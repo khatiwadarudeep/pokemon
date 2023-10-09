@@ -11,10 +11,14 @@ const SelectionButton = ({ gen, onClick, isActive }: ISelectionButtonProps) => {
     <Button
       onClick={onClick}
       sx={{
-        height: "100%",
-        padding: { base: "3px 8px", lg: "15px 20px" },
+        width: "40px",
+        height: "40px",
+        padding: 0,
         background: isActive ? "#7C538C" : "none",
         color: isActive ? "#fff" : "none",
+        borderRadius: "50%",
+        minWidth: "auto",
+        minHeight: "auto",
       }}
       _hover={{
         boxShadow: isActive

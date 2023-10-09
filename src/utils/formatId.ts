@@ -1,4 +1,4 @@
-export const formatId = (id: number) => {
+export const formatId = (id: number):string => {
     if (id < 10) {
       return `#00${id}`;
     } else if (id < 100) {

@@ -1,18 +1,72 @@
-import { Box, Button, Flex, Heading, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Image,
+  useToast,
+  Tooltip,
+} from "@chakra-ui/react";
 import { Root } from "../../hooks/useFetchPokemon";
 import { PokemonType } from "../../utils/pokemonType";
 import { getImageURL } from "../../utils/getImage";
 import { formatId } from "../../utils/formatId";
+import { useDispatch } from "react-redux";
+import { addToTeam, removeFromTeam } from "../../features/teamSlice";
+import { useAppSelector } from "../../hooks/redux";
+import { AiOutlinePlus } from "react-icons/ai";
+import { RxCross2 } from "react-icons/rx";
 
 interface IPokemonCardProps {
   pokemon: Root;
+  team: boolean;
 }
 
-const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
+const PokemonCard = ({ pokemon, team }: IPokemonCardProps) => {
   const { name, types } = pokemon;
   const background =
     PokemonType[types[0].type.name as keyof typeof PokemonType];
   const typesArray = types.map((t) => t.type.name);
+  const teamArray = useAppSelector((state) => state.team);
+  const isAlreadyInTeam = teamArray.team.some((t) => t.id === pokemon.id);
+
+  const dispatch = useDispatch();
+  const toast = useToast({
+    duration: 2000,
+    isClosable: true,
+    position: "top-right",
+  });
+
+  const handleRemoveFromTeam = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    dispatch(removeFromTeam(pokemon));
+  };
+
+  const handleAddToTeam = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (teamArray.team.length === 6) {
+      toast({
+        title: "Team already full.",
+        description: `You have already the maximum members on your team.`,
+        status: "error",
+      });
+      return;
+    }
+    if (!isAlreadyInTeam) {
+      dispatch(addToTeam(pokemon));
+      toast({
+        title: "Successfully Added",
+        description: `${pokemon.name} is added to your team.`,
+        status: "success",
+      });
+    } else
+      toast({
+        title: "Cannot add to Team",
+        description: `${pokemon.name} already exists on your team.`,
+        status: "error",
+      });
+  };
 
   return (
     <Flex
@@ -24,7 +78,14 @@ const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
       background={background.bg}
       color={"#fff"}
       boxShadow={"rgba(0, 0, 0, 0.35) 0px 5px 15px;"}
-      _hover={{ boxShadow: "none" }}
+      position={"relative"}
+      _hover={{
+        boxShadow: "none",
+        "& img": {
+          transform: "scale(1.05)",
+          transition: "transform 0.2s ease-in-out",
+        },
+      }}
     >
       <Box>
         <Heading fontSize={"38px"} fontWeight={800}>
@@ -40,12 +101,41 @@ const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
               py={2}
               mt={1}
               borderRadius={"full"}
+              key={type}
             >
               {type}
             </Button>
           ))}
         </Flex>
+
+        {!isAlreadyInTeam && (
+          <Tooltip label="Add to team">
+            <IconButton
+              icon={<AiOutlinePlus />}
+              aria-label="add-to-team"
+              onClick={handleAddToTeam}
+              position={"absolute"}
+              bottom={4}
+              left={4}
+              borderRadius={"full"}
+            />
+          </Tooltip>
+        )}
+        {isAlreadyInTeam && team && (
+          <Tooltip label="Remove from team">
+            <IconButton
+              icon={<RxCross2 />}
+              aria-label="add-to-team"
+              onClick={handleRemoveFromTeam}
+              position={"absolute"}
+              bottom={4}
+              left={4}
+              borderRadius={"full"}
+            />
+          </Tooltip>
+        )}
       </Box>
+
       <Flex
         p={2}
         position={"relative"}
@@ -74,4 +164,5 @@ const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
     </Flex>
   );
 };
+
 export default PokemonCard;

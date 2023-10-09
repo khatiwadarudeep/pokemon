@@ -1,4 +1,13 @@
-import { Box, Flex, Grid, GridItem, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  GridItem,
+  Heading,
+  IconButton,
+  Tooltip,
+  useDisclosure,
+} from "@chakra-ui/react";
 import Header from "./components/Header";
 import { generations } from "./utils/generations";
 import SelectionButton from "./components/SelectionButton";
@@ -6,6 +15,10 @@ import useFetchPokemon from "./hooks/useFetchPokemon";
 import { useState, CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import PokemonCard from "./components/PokemonCard";
+import { RiTeamFill } from "react-icons/ri";
+import { PokemonType } from "./utils/pokemonType";
+import Team from "./features/Team";
+import PokemonModal from "./components/TeamModal";
 
 const override: CSSProperties = {
   display: "block",
@@ -19,7 +32,7 @@ function App() {
   const [activeGeneration, setActiveGeneration] = useState("I");
   const { data, loading } = useFetchPokemon(offset, limit);
 
-  const handleButtonClick = (
+  const handleGenerationClick = (
     newOffset: number,
     newLimit: number,
     generation: string
@@ -28,6 +41,7 @@ function App() {
     setLimit(newLimit);
     setActiveGeneration(generation);
   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -38,24 +52,29 @@ function App() {
             Select Generations:
           </Heading>
         </Flex>
-        <Grid justifyContent={"center"}>
-          <GridItem
-            backgroundColor={"#fff"}
-            className="selection"
-            borderRadius={"md"}
-          >
-            {generations.map((gen, index) => (
-              <SelectionButton
-                gen={gen.genString}
-                key={index}
-                onClick={() =>
-                  handleButtonClick(gen.offset, gen.limit, gen.genString)
-                }
-                isActive={activeGeneration === gen.genString}
+        <Flex justifyContent={"center"} alignItems={"center"}>
+          {generations.map((gen, index) => (
+            <SelectionButton
+              gen={gen.genString}
+              key={index}
+              onClick={() =>
+                handleGenerationClick(gen.offset, gen.limit, gen.genString)
+              }
+              isActive={activeGeneration === gen.genString}
+            />
+          ))}
+          <Flex justifyContent={"flex-end"}>
+            <Tooltip label="My Team">
+              <IconButton
+                background={PokemonType.water.bg}
+                icon={<RiTeamFill />}
+                aria-label="add-to-team"
+                onClick={onOpen}
+                borderRadius={"full"}
               />
-            ))}
-          </GridItem>
-        </Grid>
+            </Tooltip>
+          </Flex>
+        </Flex>
         {loading ? (
           <Flex
             justifyContent="center"
@@ -67,7 +86,7 @@ function App() {
               color={"red"}
               loading={loading}
               cssOverride={override}
-              size={150}
+              size={100}
               aria-label="Loading Spinner"
               data-testid="loader"
             />
@@ -85,13 +104,16 @@ function App() {
             {data?.condensedData?.map((pokemon, index) => {
               return (
                 <GridItem key={index} cursor={"pointer"}>
-                  <PokemonCard pokemon={pokemon} />
+                  <PokemonCard pokemon={pokemon} team={false} />
                 </GridItem>
               );
             })}
           </Grid>
         )}
       </Box>
+      <PokemonModal title="My Team" isOpen={isOpen} onClose={onClose}>
+        <Team />
+      </PokemonModal>
     </>
   );
 }
