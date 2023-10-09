@@ -13,17 +13,16 @@ import { PokemonType } from "../../utils/pokemonType";
 import { getImageURL } from "../../utils/getImage";
 import { formatId } from "../../utils/formatId";
 import { useDispatch } from "react-redux";
-import { addToTeam, removeFromTeam } from "../../features/teamSlice";
+import { addToTeam } from "../../features/teamSlice";
 import { useAppSelector } from "../../hooks/redux";
 import { AiOutlinePlus } from "react-icons/ai";
-import { RxCross2 } from "react-icons/rx";
 
 interface IPokemonCardProps {
   pokemon: Root;
   team: boolean;
 }
 
-const PokemonCard = ({ pokemon, team }: IPokemonCardProps) => {
+const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
   const { name, types } = pokemon;
   const background =
     PokemonType[types[0].type.name as keyof typeof PokemonType];
@@ -37,11 +36,6 @@ const PokemonCard = ({ pokemon, team }: IPokemonCardProps) => {
     isClosable: true,
     position: "top-right",
   });
-
-  const handleRemoveFromTeam = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    dispatch(removeFromTeam(pokemon));
-  };
 
   const handleAddToTeam = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -114,19 +108,6 @@ const PokemonCard = ({ pokemon, team }: IPokemonCardProps) => {
               icon={<AiOutlinePlus />}
               aria-label="add-to-team"
               onClick={handleAddToTeam}
-              position={"absolute"}
-              bottom={4}
-              left={4}
-              borderRadius={"full"}
-            />
-          </Tooltip>
-        )}
-        {isAlreadyInTeam && team && (
-          <Tooltip label="Remove from team">
-            <IconButton
-              icon={<RxCross2 />}
-              aria-label="add-to-team"
-              onClick={handleRemoveFromTeam}
               position={"absolute"}
               bottom={4}
               left={4}

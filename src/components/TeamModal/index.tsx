@@ -1,5 +1,4 @@
 import {
-  Grid,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -28,11 +27,7 @@ const PokemonModal = ({
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Grid templateColumns={"repeat(2,1fr)"} gap={3}>
-              {children}
-            </Grid>
-          </ModalBody>
+          <ModalBody mb={4}>{children}</ModalBody>
         </ModalContent>
       </Modal>
       ;
