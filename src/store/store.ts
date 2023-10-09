@@ -14,7 +14,6 @@ export const store = configureStore({
     team: persistedReducer
   },
 })
-
 export const persistor = persistStore(store)
 
 export type RootState = ReturnType<typeof store.getState>

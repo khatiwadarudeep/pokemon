@@ -9,7 +9,14 @@ const Team = () => {
   return (
     <>
       {team.length > 0 ? (
-        <Grid templateColumns={"repeat(3, 1fr)"} gap={3}>
+        <Grid
+          templateColumns={{
+            base: "repeat(1, 1fr)",
+            md: "repeat(2, 1fr)",
+            xl: "repeat(3, 1fr)",
+          }}
+          gap={3}
+        >
           {team.map((t) => (
             <TeamCard pokemon={t} />
           ))}

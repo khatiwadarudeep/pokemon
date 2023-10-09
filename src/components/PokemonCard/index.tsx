@@ -7,6 +7,7 @@ import {
   Image,
   useToast,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Root } from "../../hooks/useFetchPokemon";
 import { PokemonType } from "../../utils/pokemonType";
@@ -16,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { addToTeam } from "../../features/teamSlice";
 import { useAppSelector } from "../../hooks/redux";
 import { AiOutlinePlus } from "react-icons/ai";
+import DetailModal from "../DetailsModal";
 
 interface IPokemonCardProps {
   pokemon: Root;
@@ -36,6 +38,11 @@ const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
     isClosable: true,
     position: "top-right",
   });
+  const {
+    isOpen: isDetailModalOpen,
+    onOpen: onDetailModalOpen,
+    onClose: onDetailModalClose,
+  } = useDisclosure();
 
   const handleAddToTeam = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -63,86 +70,95 @@ const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
   };
 
   return (
-    <Flex
-      gap={2}
-      borderRadius={"3xl"}
-      p={6}
-      justifyContent={"space-between"}
-      height={"300px"}
-      background={background.bg}
-      color={"#fff"}
-      boxShadow={"rgba(0, 0, 0, 0.35) 0px 5px 15px;"}
-      position={"relative"}
-      _hover={{
-        boxShadow: "none",
-        "& img": {
-          transform: "scale(1.05)",
-          transition: "transform 0.2s ease-in-out",
-        },
-      }}
-    >
-      <Box>
-        <Heading fontSize={"38px"} fontWeight={800}>
-          {name}
-        </Heading>
-
-        <Flex mt={4} direction={"column"} justifyContent={"start"}>
-          {typesArray.map((type) => (
-            <Button
-              background={background.btn}
-              width={"min-content"}
-              px={4}
-              py={2}
-              mt={1}
-              borderRadius={"full"}
-              key={type}
-            >
-              {type}
-            </Button>
-          ))}
-        </Flex>
-
-        {!isAlreadyInTeam && (
-          <Tooltip label="Add to team">
-            <IconButton
-              icon={<AiOutlinePlus />}
-              aria-label="add-to-team"
-              onClick={handleAddToTeam}
-              position={"absolute"}
-              bottom={4}
-              left={4}
-              borderRadius={"full"}
-            />
-          </Tooltip>
-        )}
-      </Box>
-
+    <>
       <Flex
-        p={2}
+        gap={2}
+        borderRadius={"3xl"}
+        p={6}
+        justifyContent={"space-between"}
+        height={"300px"}
+        background={background.bg}
+        color={"#fff"}
+        boxShadow={"rgba(0, 0, 0, 0.35) 0px 5px 15px;"}
         position={"relative"}
-        alignItems={"center"}
-        justifyContent={"flex-end"}
+        _hover={{
+          boxShadow: "none",
+          "& img": {
+            transform: "scale(1.05)",
+            transition: "transform 0.2s ease-in-out",
+          },
+        }}
       >
-        <Heading
-          position={"absolute"}
-          right={"0"}
-          top={"0"}
-          fontSize={"42px"}
-          fontWeight={"800"}
-          opacity={0.5}
+        <Box>
+          <Heading fontSize={"38px"} fontWeight={800}>
+            {name}
+          </Heading>
+
+          <Flex mt={4} direction={"column"} justifyContent={"start"}>
+            {typesArray.map((type) => (
+              <Button
+                background={background.btn}
+                width={"min-content"}
+                px={4}
+                py={2}
+                mt={1}
+                borderRadius={"full"}
+                key={type}
+              >
+                {type}
+              </Button>
+            ))}
+          </Flex>
+
+          {!isAlreadyInTeam && (
+            <Tooltip label="Add to team">
+              <IconButton
+                icon={<AiOutlinePlus />}
+                aria-label="add-to-team"
+                onClick={handleAddToTeam}
+                position={"absolute"}
+                bottom={4}
+                left={4}
+                borderRadius={"full"}
+              />
+            </Tooltip>
+          )}
+        </Box>
+
+        <Flex
+          p={2}
+          position={"relative"}
+          alignItems={"center"}
+          justifyContent={"flex-end"}
         >
-          {formatId(pokemon?.id)}
-        </Heading>
-        <Image
-          position={"inherit"}
-          maxH={"full"}
-          maxW={"full"}
-          boxSizing="border-box"
-          transform={"scale(0.75)"}
-          src={getImageURL(pokemon?.id?.toString())}
-        />
+          <Heading
+            position={"absolute"}
+            right={"0"}
+            top={"0"}
+            fontSize={"42px"}
+            fontWeight={"800"}
+            opacity={0.5}
+          >
+            {formatId(pokemon?.id)}
+          </Heading>
+          <Image
+            position={"inherit"}
+            maxH={"full"}
+            maxW={"full"}
+            boxSizing="border-box"
+            transform={"scale(0.75)"}
+            src={getImageURL(pokemon?.id?.toString())}
+            onClick={onDetailModalOpen}
+          />
+        </Flex>
       </Flex>
-    </Flex>
+      <DetailModal
+        title="hello"
+        isDetailModalOpen={isDetailModalOpen}
+        onDetailModalClose={onDetailModalClose}
+        pokemon={pokemon}
+      />
+    </>
   );
 };
 
