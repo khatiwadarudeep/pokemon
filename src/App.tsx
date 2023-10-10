@@ -16,7 +16,6 @@ import { useState, CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import PokemonCard from "./components/PokemonCard";
 import { RiTeamFill } from "react-icons/ri";
-import { PokemonType } from "./utils/pokemonType";
 import Team from "./features/Team";
 import PokemonModal from "./components/TeamModal";
 
@@ -66,8 +65,8 @@ function App() {
           <Flex justifyContent={"flex-end"}>
             <Tooltip label="My Team">
               <IconButton
-                background={PokemonType.water.bg}
-                icon={<RiTeamFill />}
+                background={"red"}
+                icon={<RiTeamFill color={"#fff"} />}
                 aria-label="add-to-team"
                 onClick={onOpen}
                 borderRadius={"full"}
