@@ -1,4 +1,4 @@
-import { Flex, Grid } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Root } from "../../../hooks/useFetchPokemon";
 
 interface IEvolutionProps {
@@ -8,10 +8,8 @@ interface IEvolutionProps {
 const Evolution = ({ pokemon }: IEvolutionProps) => {
   return (
     <>
-      <Flex>
-        <Grid gap={3} templateColumns={"repeat(3,1fr)"}>
-          Evolution of {pokemon.name}
-        </Grid>
+      <Flex justifyContent={"center"} alignItems={"center"} height={"42px"}>
+        Evolution of {pokemon.name} cannot be found right now.
       </Flex>
     </>
   );
